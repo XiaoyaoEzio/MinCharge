@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.min.charge.mapping.OrderRecordMapper">
+	
+	<select id="getById" resultType="OrderRecord">
+		select * from tOrderRecord where Id = #{id}
+	</select>
+	
+	<select id="getByTradeSn" resultType="OrderRecord">
+		select * from tOrderRecord where TradingSn = #{tradingSn}
+	</select>
+	
+	<select id="getByDeviceId_Working" resultType="OrderRecord">
+		select * from tOrderRecord where DeviceId = #{deviceId} and OrderStatusEnum != 2
+	</select>
+	
+	<insert id="save" parameterType="OrderRecord" useGeneratedKeys="true" keyProperty="id">
+  		insert into tOrderRecord(CreatedDateTime, StartTime, StopTime, ClientId, PriceId, TradingSn, DeviceId, 
+  		OrderStatusEnum, LastPauseTime, TotalPauseTime, Path) 
+  			values(#{createdDateTime}, #{startTime},#{stopTime},#{clientId},#{priceId},#{tradingSn},#{deviceId},
+  			#{orderStatusEnum}, #{lastPauseTime}, #{totalPauseTime}, #{path} )
+	</insert>
+	
+	<update id="update" parameterType="OrderRecord" >
+  		update tOrderRecord set CreatedDateTime=#{createdDateTime}, StartTime= #{startTime}, StopTime=#{stopTime}, 
+  		ClientId=#{clientId}, PriceId=#{priceId}, TradingSn=#{tradingSn}, DeviceId=#{deviceId}, OrderStatusEnum = #{orderStatusEnum},
+  		LastPauseTime =#{lastPauseTime},  TotalPauseTime = #{totalPauseTime}, Path = #{path} where Id = #{id}
+	</update>
+</mapper>

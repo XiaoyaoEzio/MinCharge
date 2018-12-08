@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.min.charge.mapping.PriceMapper">
+	<select id="getById" resultType="Price">
+		select * from tPrice where Id = #{id}
+	</select>
+	
+	<insert id = "save" parameterType = "Price"  useGeneratedKeys= "true" keyProperty = "id">
+		insert into tPrice(CommonPrice, CreatedDateTime, HasInvaild) 
+  			values(#{commonPrice}, #{createdDateTime},#{hasInvaild})
+	</insert>
+	
+	<update id="update" parameterType = "Price">
+		update tPrice set HasInvaild = #{hasInvaild} where Id = #{id}
+	</update>
+	
+	<select id="getByNow" resultType="Price">
+		select * from tPrice where HasInvaild = 0
+	</select>
+</mapper>
