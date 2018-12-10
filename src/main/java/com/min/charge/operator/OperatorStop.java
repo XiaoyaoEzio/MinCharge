@@ -1,11 +1,5 @@
 package com.min.charge.operator;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-import org.apache.ibatis.session.SqlSession;
-import org.apache.log4j.Logger;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.min.charge.beans.BillRecords;
@@ -17,11 +11,7 @@ import com.min.charge.buffer.DeviceBuffer;
 import com.min.charge.buffer.TradingSnBuffer;
 import com.min.charge.config.Config;
 import com.min.charge.config.MybaitsConfig;
-import com.min.charge.enums.ErrorCodeEnum;
-import com.min.charge.enums.OperatorTypeEnum;
-import com.min.charge.enums.OrderStatusEnum;
-import com.min.charge.enums.TradeStatusEnum;
-import com.min.charge.enums.TradeTypeEnum;
+import com.min.charge.enums.*;
 import com.min.charge.http.HttpMethod;
 import com.min.charge.http.api.ChargeApi;
 import com.min.charge.json.JsonResult;
@@ -29,6 +19,11 @@ import com.min.charge.mapping.BillRecordsMapper;
 import com.min.charge.mapping.ClientMapper;
 import com.min.charge.mapping.OrderRecordMapper;
 import com.min.charge.mapping.PriceMapper;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.log4j.Logger;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class OperatorStop {
 
@@ -75,28 +70,38 @@ public class OperatorStop {
 				PriceMapper priceDao = session.getMapper(PriceMapper.class);
 				ClientMapper clientDao = session.getMapper(ClientMapper.class);
 				client = clientDao.getById(client.getId());
-				Date stopTime = new Date();
+				Date stopDate = new Date();
 				Price price = priceDao.getByNow();
-				
-				int pause = bufferRecord.getOrderStatusEnum().compareTo(
-						OrderStatusEnum.Pause);
-				long chargeTime =  ((pause == 0 ? bufferRecord
-						.getLastPauseTime().getTime() : stopTime.getTime()) - bufferRecord
-						.getStartTime().getTime());
-				long costTime = chargeTime
-						- (bufferRecord.getTotalPauseTime() == null ? 0
-								: bufferRecord.getTotalPauseTime());
+
+				// 判断当前状态是否为暂停
+				int pause = bufferRecord.getOrderStatusEnum().compareTo(OrderStatusEnum.Pause);
+
+                long startTime = bufferRecord.getStartTime().getTime();
+                long lastPauseTime = bufferRecord.getLastPauseTime().getTime();
+                long stopTime = stopDate.getTime();
+                Integer totalPauseTime = bufferRecord.getTotalPauseTime();
+                if (totalPauseTime == null) {
+                    totalPauseTime = 0;
+                }
+
+                // chargeTime 总时长，costTime 需要支付的时长
+                long chargeTime = (pause == 0 ? lastPauseTime : stopTime) - startTime;
+				long costTime = chargeTime - totalPauseTime;
+
+				// 更新暂停时长
 				if (pause == 0) {
-					int totalPauseTime = (int)(stopTime.getTime() - bufferRecord.getLastPauseTime().getTime());
-					bufferRecord.setTotalPauseTime(bufferRecord.getTotalPauseTime()+(int)totalPauseTime);	
+					int newPauseTime = (int)(stopTime - lastPauseTime);
+					bufferRecord.setTotalPauseTime(totalPauseTime + newPauseTime);
 				}
-				int costMin = (int) (costTime / (1000 * 60));
-				int cost = price.getCommonPrice() * costMin;
+
+				// 需付费的充电时长向上取整
+				int costMin = (int) ((costTime / (1000 * 60)) + 1);
+				int cost = price.getCommonPrice() / 60 * costMin;
+
 				BillRecords bill = new BillRecords();
 				bill.setClientId(client.getId());
-				bill.setCreatedDateTime(stopTime);
-				bill.setDeviceId(DeviceBuffer.Instance.getByDeviceSn(deviceSn)
-						.getId());
+				bill.setCreatedDateTime(stopDate);
+				bill.setDeviceId(DeviceBuffer.Instance.getByDeviceSn(deviceSn).getId());
 				bill.setPriceId(price.getId());
 				bill.setTotalFee(cost);
 				bill.setTradeStatusEnum(TradeStatusEnum.Finished);
@@ -104,31 +109,28 @@ public class OperatorStop {
 				bill.setTradingSn(bufferRecord.getTradingSn());
 
 				bufferRecord.setOrderStatusEnum(OrderStatusEnum.Stop);
-				bufferRecord.setStopTime(stopTime);
-				if (client.getBalance() < cost) {
-					clientDao.updateBalance(client.getId(),
-							-client.getBalance());
+				bufferRecord.setStopTime(stopDate);
+				/*if (client.getBalance() < cost) {
+					clientDao.updateBalance(client.getId(), -client.getBalance());
 				} else {
 					clientDao.updateBalance(client.getId(), -cost);
-				}
-				ChargeInfoBuffer.Instance.removeByTradeSn(bufferRecord
-						.getTradingSn());
+				}*/
+                clientDao.updateBalance(client.getId(), -cost);
+
+				ChargeInfoBuffer.Instance.removeByTradeSn(bufferRecord.getTradingSn());
 				ChargeInfoBuffer.Instance.removeByDeviceId_Path(bufferRecord.getDeviceId(),bufferRecord.getPath());
 				orderDao.update(bufferRecord);
 				billDao.save(bill);
-				SimpleDateFormat dateFormat = new SimpleDateFormat(
-						"yyyy-MM-dd HH:mm:ss");
+
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 				PayRecord payRecord = new PayRecord();
-				payRecord.startTime = dateFormat.format(bufferRecord
-						.getStartTime());
-				payRecord.endTime = dateFormat.format(bufferRecord
-						.getStopTime());
+				payRecord.startTime = dateFormat.format(bufferRecord.getStartTime());
+				payRecord.endTime = dateFormat.format(bufferRecord.getStopTime());
 				payRecord.deviceSn = deviceSn;
 				payRecord.totalFee = bill.getTotalFee();
-				payRecord.totalPauseTime = bufferRecord.getTotalPauseTime();
+				payRecord.totalPauseTime = totalPauseTime;
 				payRecord.tradingSn = bufferRecord.getTradingSn();
 				result = JsonResult.data(payRecord);
-
 			}
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
