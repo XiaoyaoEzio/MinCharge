@@ -77,22 +77,25 @@ public class OperatorStop {
 				int pause = bufferRecord.getOrderStatusEnum().compareTo(OrderStatusEnum.Pause);
 
                 long startTime = bufferRecord.getStartTime().getTime();
-                long lastPauseTime = bufferRecord.getLastPauseTime().getTime();
                 long stopTime = stopDate.getTime();
                 Integer totalPauseTime = bufferRecord.getTotalPauseTime();
                 if (totalPauseTime == null) {
                     totalPauseTime = 0;
                 }
 
-                // chargeTime 总时长，costTime 需要支付的时长
-                long chargeTime = (pause == 0 ? lastPauseTime : stopTime) - startTime;
-				long costTime = chargeTime - totalPauseTime;
+                long chargeTime;
+                if (pause == 0) {
+                    long lastPauseTime = bufferRecord.getLastPauseTime().getTime();
+                    chargeTime = lastPauseTime - startTime;
+                    // 更新暂停时长
+                    int newPauseTime = (int)(stopTime - lastPauseTime);
+                    bufferRecord.setTotalPauseTime(totalPauseTime + newPauseTime);
+                } else {
+                    chargeTime = stopTime - startTime;
+                }
 
-				// 更新暂停时长
-				if (pause == 0) {
-					int newPauseTime = (int)(stopTime - lastPauseTime);
-					bufferRecord.setTotalPauseTime(totalPauseTime + newPauseTime);
-				}
+                // chargeTime 总时长，costTime 需要支付的时长
+				long costTime = chargeTime - totalPauseTime;
 
 				// 需付费的充电时长向上取整
 				int costMin = (int) ((costTime / (1000 * 60)) + 1);
