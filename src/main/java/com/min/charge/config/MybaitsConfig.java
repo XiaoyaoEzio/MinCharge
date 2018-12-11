@@ -1,19 +1,21 @@
 package com.min.charge.config;
 
-import java.io.IOException;
-import java.io.InputStream;
-
+import com.min.charge.enums.AutoEnumTypeHandler;
+import com.min.charge.enums.OrderStatusEnum;
+import com.min.charge.enums.TradeStatusEnum;
+import com.min.charge.enums.TradeTypeEnum;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import com.min.charge.enums.AutoEnumTypeHandler;
-import com.min.charge.enums.OrderStatusEnum;
-import com.min.charge.enums.TradeStatusEnum;
-import com.min.charge.enums.TradeTypeEnum;
+import java.io.IOException;
+import java.io.InputStream;
 
+@Component
 public class MybaitsConfig {
 	
 	private static final Logger logger = Logger.getLogger(MybaitsConfig.class);
@@ -43,8 +45,13 @@ public class MybaitsConfig {
 			}
 		}
 	}
-	
-	private static SqlSessionFactory factory;
+
+	@Autowired
+    public void setFactory(SqlSessionFactory factory) {
+        MybaitsConfig.factory = factory;
+    }
+
+    private static SqlSessionFactory factory;
 	private static final ThreadLocal<SqlSession> tl = new ThreadLocal<SqlSession>();
 	
 	/**

@@ -12,12 +12,13 @@
 	        <property name="poolPingEnabled" value="true"/>
             <property name="poolPingQuery" value="select 1"/>
             <property name="poolPingConnectionsNotUsedFor" value="1800000"/>
-            
-	       
-	        <property name="url" value="jdbc:mysql://172.16.0.151:3006/charge?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8&amp;autoReconnectForPools\=true"/>
+
+
+	        <property name="url"
+                      value="jdbc:mysql://rds6819688g16h1s67p0365.mysql.rds.aliyuncs.com:3306/charging?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8&amp;autoReconnectForPools\=true"/>
 	        <property name="username" value="admin"/>
 	        <property name="password" value="Chinascno=123456"/>
-	         
+
 	         <!--
 	        <property name="url" value="jdbc:mysql://192.168.162.28:3306/mincharge?autoReconnect=true&amp;useUnicode=true&amp;characterEncoding=UTF8&amp;autoReconnectForPools\=true"/>
 	        <property name="username" value="root"/>
