@@ -1,14 +1,14 @@
-package com.min.charge.sevice;
-
-import javax.servlet.http.HttpServletRequest;
+package com.min.charge.service;
 
 import com.min.charge.json.JsonResult;
+
+import javax.servlet.http.HttpServletRequest;
 
 public interface CommandService {
 
 	JsonResult connect(HttpServletRequest request, String token, String deviceSn);
 	
-	JsonResult start(HttpServletRequest request, String token, String deviceSn, String path);
+	JsonResult start(HttpServletRequest request, String token, String deviceSn, String path, String chargeRank);
 
 	JsonResult pause(HttpServletRequest request, String token, String deviceSn, String path);
 

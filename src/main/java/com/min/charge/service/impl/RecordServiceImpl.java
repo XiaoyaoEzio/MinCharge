@@ -1,12 +1,4 @@
-package com.min.charge.sevice.impl;
-
-import java.text.SimpleDateFormat;
-import java.util.Collection;
-import java.util.LinkedList;
-
-import org.apache.ibatis.session.SqlSession;
-import org.apache.log4j.Logger;
-import org.springframework.stereotype.Service;
+package com.min.charge.service.impl;
 
 import com.min.charge.beans.BillRecords;
 import com.min.charge.beans.Client;
@@ -20,7 +12,14 @@ import com.min.charge.json.JsonResult;
 import com.min.charge.mapping.BillRecordsMapper;
 import com.min.charge.mapping.DeviceMapper;
 import com.min.charge.mapping.OrderRecordMapper;
-import com.min.charge.sevice.RecordService;
+import com.min.charge.service.RecordService;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import java.text.SimpleDateFormat;
+import java.util.Collection;
+import java.util.LinkedList;
 
 @Service
 public class RecordServiceImpl implements RecordService{
@@ -82,21 +81,26 @@ public class RecordServiceImpl implements RecordService{
 		}
 		Device device = deviceDao.getById(billRecords.getDeviceId());
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		ComsumeDetail comsumeDetail = new ComsumeDetail();
-		comsumeDetail.id = billRecords.getId();
-		comsumeDetail.tradeType = billRecords.getTradeType().getValue();
-		comsumeDetail.tradeStatusEnum = billRecords.getTradeStatusEnum().getValue();
-		comsumeDetail.tradingSn = billRecords.getTradingSn();
-		comsumeDetail.tradeTime = dateFormat.format(billRecords.getCreatedDateTime());
-		comsumeDetail.totalFee = billRecords.getTotalFee();
-		comsumeDetail.startTime = dateFormat.format(orderRecord.getStartTime());
-		comsumeDetail.stopTime = dateFormat.format(orderRecord.getStopTime());
-		comsumeDetail.totalPauseTime = orderRecord.getTotalPauseTime();
-		comsumeDetail.path = orderRecord.getPath();
-		comsumeDetail.deviceName = device.getDeviceName();
-		comsumeDetail.deviceSn = device.getDeviceSn();
+		ConsumeDetail consumeDetail = new ConsumeDetail();
+		consumeDetail.id = billRecords.getId();
+		consumeDetail.tradeType = billRecords.getTradeType().getValue();
+		consumeDetail.tradeStatusEnum = billRecords.getTradeStatusEnum().getValue();
+		consumeDetail.tradingSn = billRecords.getTradingSn();
+		consumeDetail.tradeTime = dateFormat.format(billRecords.getCreatedDateTime());
+		consumeDetail.totalFee = billRecords.getTotalFee();
+		consumeDetail.startTime = dateFormat.format(orderRecord.getStartTime());
+		consumeDetail.stopTime = dateFormat.format(orderRecord.getStopTime());
+		consumeDetail.totalPauseTime = orderRecord.getTotalPauseTime();
+		int chargeTime =
+                (int) (orderRecord.getStopTime().getTime() - orderRecord.getStartTime().getTime())
+                - consumeDetail.totalPauseTime;
+		chargeTime /= 1000 * 60;
+		consumeDetail.chargeTime = chargeTime;
+		consumeDetail.path = orderRecord.getPath();
+		consumeDetail.deviceName = device.getDeviceName();
+		consumeDetail.deviceSn = device.getDeviceSn();
 		MybaitsConfig.closeCurrent();
-		return JsonResult.data(comsumeDetail);
+		return JsonResult.data(consumeDetail);
 	}
 
 	@Override
@@ -142,9 +146,10 @@ public class RecordServiceImpl implements RecordService{
 		public int totalFee;
 	}
 	
-	class ComsumeDetail extends RecordInfo{
+	class ConsumeDetail extends RecordInfo{
 		public String startTime;
 		public int totalPauseTime;
+		public int chargeTime;
 		public String stopTime;
 		public String deviceName;
 		public String deviceSn;

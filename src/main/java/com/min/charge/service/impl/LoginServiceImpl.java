@@ -1,4 +1,4 @@
-package com.min.charge.sevice.impl;
+package com.min.charge.service.impl;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -15,7 +15,7 @@ import com.min.charge.json.JsonResult;
 import com.min.charge.mapping.ClientMapper;
 import com.min.charge.mapping.UserMapper;
 import com.min.charge.security.MD5;
-import com.min.charge.sevice.LoginService;
+import com.min.charge.service.LoginService;
 
 @Service
 public class LoginServiceImpl implements LoginService{

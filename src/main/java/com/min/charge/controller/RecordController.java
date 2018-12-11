@@ -1,16 +1,15 @@
 package com.min.charge.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.min.charge.config.MybaitsConfig;
+import com.min.charge.json.JsonResult;
+import com.min.charge.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.min.charge.config.MybaitsConfig;
-import com.min.charge.json.JsonResult;
-import com.min.charge.sevice.RecordService;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class RecordController {

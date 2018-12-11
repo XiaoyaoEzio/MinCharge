@@ -1,4 +1,4 @@
-package com.min.charge.sevice.impl;
+package com.min.charge.service.impl;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -19,7 +19,7 @@ import com.min.charge.json.JsonResult;
 import com.min.charge.mapping.ClientMapper;
 import com.min.charge.mapping.DeviceMapper;
 import com.min.charge.mapping.PriceMapper;
-import com.min.charge.sevice.ChargingInfoService;
+import com.min.charge.service.ChargingInfoService;
 
 @Service
 public class ChargingInfoServiceImpl implements ChargingInfoService{

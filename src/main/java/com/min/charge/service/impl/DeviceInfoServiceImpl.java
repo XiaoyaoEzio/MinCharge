@@ -1,4 +1,4 @@
-package com.min.charge.sevice.impl;
+package com.min.charge.service.impl;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -20,7 +20,7 @@ import com.min.charge.json.JsonResult;
 import com.min.charge.json.PathState;
 import com.min.charge.mapping.DeviceMapper;
 import com.min.charge.mapping.PriceMapper;
-import com.min.charge.sevice.DeviceInfoService;
+import com.min.charge.service.DeviceInfoService;
 
 @Service
 public class DeviceInfoServiceImpl implements DeviceInfoService{

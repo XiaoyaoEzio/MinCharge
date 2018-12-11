@@ -1,15 +1,14 @@
 package com.min.charge.controller;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.min.charge.json.JsonResult;
+import com.min.charge.service.CommandService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.min.charge.json.JsonResult;
-import com.min.charge.sevice.CommandService;
+import javax.servlet.http.HttpServletRequest;
 
 @Controller
 public class CommandController {
@@ -21,10 +20,11 @@ public class CommandController {
 	public @ResponseBody JsonResult start(HttpServletRequest request, 
 			@RequestParam(name = "token", required = true) String token,
 			@RequestParam(name = "deviceSn", required = true) String  deviceId,
-			@RequestParam(name = "path", required = true) String  path) {
-		
+			@RequestParam(name = "path", required = true) String  path,
+			@RequestParam(name = "chargeRank", required = false) String  chargeRank
+	) {
 		JsonResult jsonResult = new JsonResult();
-		jsonResult = commandService.start(request,token, deviceId, path);
+		jsonResult = commandService.start(request,token, deviceId, path, chargeRank);
 		return jsonResult;
 	}
 	
@@ -72,10 +72,10 @@ public class CommandController {
 	}
 	
 	@RequestMapping("/min/charge/command/state")
-	public @ResponseBody JsonResult state(HttpServletRequest request, 
-			@RequestParam(name = "token", required = true) String token,
-			@RequestParam(name = "deviceSn", required = true) String  deviceId,
-			@RequestParam(name = "path", required = false) String  path) {
+	public @ResponseBody JsonResult state(HttpServletRequest request,
+				@RequestParam(name = "token", required = true) String token,
+				@RequestParam(name = "deviceSn", required = true) String  deviceId,
+				@RequestParam(name = "path", required = false) String  path) {
 		
 		JsonResult jsonResult = new JsonResult();
 		jsonResult = commandService.state(request,token, deviceId, path);

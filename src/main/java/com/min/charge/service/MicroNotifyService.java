@@ -1,4 +1,4 @@
-package com.min.charge.sevice;
+package com.min.charge.service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

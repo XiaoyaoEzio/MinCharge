@@ -1,22 +1,23 @@
 package com.min.charge.config;
 
-import java.io.IOException;
-import java.io.InputStream;
-
+import com.min.charge.enums.AutoEnumTypeHandler;
+import com.min.charge.enums.OrderStatusEnum;
+import com.min.charge.enums.TradeStatusEnum;
+import com.min.charge.enums.TradeTypeEnum;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.apache.log4j.Logger;
 
-import com.min.charge.enums.AutoEnumTypeHandler;
-import com.min.charge.enums.OrderStatusEnum;
-import com.min.charge.enums.TradeStatusEnum;
-import com.min.charge.enums.TradeTypeEnum;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class MybaitsConfig {
 	
 	private static final Logger logger = Logger.getLogger(MybaitsConfig.class);
+	private static SqlSessionFactory factory;
+	private static final ThreadLocal<SqlSession> tl = new ThreadLocal<SqlSession>();
 	
 	static {
 		
@@ -44,8 +45,7 @@ public class MybaitsConfig {
 		}
 	}
 	
-	private static SqlSessionFactory factory;
-	private static final ThreadLocal<SqlSession> tl = new ThreadLocal<SqlSession>();
+
 	
 	/**
 	 * 得到与当前线程绑定的 SqlSession对象

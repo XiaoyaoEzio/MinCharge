@@ -40,8 +40,7 @@ public class OperatorStop {
 		SqlSession session = MybaitsConfig.getCurrent();
 		String bufferSn = "";
 		try {
-			OrderRecord bufferRecord = ChargeInfoBuffer.Instance
-					.getByClientId(client.getId());
+			OrderRecord bufferRecord = ChargeInfoBuffer.Instance.getByClientId(client.getId());
 			if (bufferRecord == null) {
 				return JsonResult.code(ErrorCodeEnum.NO_CHARGING);
 			}
@@ -52,9 +51,7 @@ public class OperatorStop {
 				}
 				TradingSnBuffer.Instance.put(bufferRecord.getTradingSn());
 			}
-			method = HttpMethod.post(
-					Config.Instance.device_Query_URL,
-					jsonString);
+			method = HttpMethod.post(Config.Instance.device_Query_URL, jsonString);
 			if (method != null || !"".equals(method)) {
 				ObjectMapper objectMapper = new ObjectMapper();
 				JsonNode rootNode = objectMapper.readTree(method);
@@ -63,10 +60,8 @@ public class OperatorStop {
 					logger.error(rootNode.get("val").asText());
 					return JsonResult.code(ErrorCodeEnum.COMMAND_START_FAILD);
 				}
-				OrderRecordMapper orderDao = session
-						.getMapper(OrderRecordMapper.class);
-				BillRecordsMapper billDao = session
-						.getMapper(BillRecordsMapper.class);
+				OrderRecordMapper orderDao = session.getMapper(OrderRecordMapper.class);
+				BillRecordsMapper billDao = session.getMapper(BillRecordsMapper.class);
 				PriceMapper priceDao = session.getMapper(PriceMapper.class);
 				ClientMapper clientDao = session.getMapper(ClientMapper.class);
 				client = clientDao.getById(client.getId());
@@ -88,7 +83,7 @@ public class OperatorStop {
                     long lastPauseTime = bufferRecord.getLastPauseTime().getTime();
                     chargeTime = lastPauseTime - startTime;
                     // 更新暂停时长
-                    int newPauseTime = (int)(stopTime - lastPauseTime);
+                    int newPauseTime = new Long(stopTime - lastPauseTime).intValue();
                     bufferRecord.setTotalPauseTime(totalPauseTime + newPauseTime);
                 } else {
                     chargeTime = stopTime - startTime;

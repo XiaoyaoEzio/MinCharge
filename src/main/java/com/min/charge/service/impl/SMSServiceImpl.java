@@ -1,16 +1,4 @@
-package com.min.charge.sevice.impl;
-
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.SortedMap;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.log4j.Logger;
-import org.jdom.JDOMException;
-import org.springframework.stereotype.Service;
+package com.min.charge.service.impl;
 
 import com.min.charge.beans.Client;
 import com.min.charge.buffer.LoginBuffer;
@@ -21,7 +9,17 @@ import com.min.charge.json.JsonResult;
 import com.min.charge.security.CommonTool;
 import com.min.charge.security.MD5;
 import com.min.charge.security.XMLUtil;
-import com.min.charge.sevice.SMSService;
+import com.min.charge.service.SMSService;
+import org.apache.log4j.Logger;
+import org.jdom.JDOMException;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.SortedMap;
 
 @Service
 public class SMSServiceImpl implements SMSService{

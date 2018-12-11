@@ -1,23 +1,19 @@
-package com.min.charge.sevice.impl;
-
-import javax.servlet.http.HttpServletRequest;
-
-import org.springframework.stereotype.Service;
+package com.min.charge.service.impl;
 
 import com.min.charge.beans.Client;
 import com.min.charge.buffer.LoginBuffer;
 import com.min.charge.enums.ErrorCodeEnum;
 import com.min.charge.json.JsonResult;
-import com.min.charge.operator.OperatorPause;
-import com.min.charge.operator.OperatorRegain;
-import com.min.charge.operator.OperatorStart;
-import com.min.charge.operator.OperatorState;
-import com.min.charge.operator.OperatorStop;
-import com.min.charge.sevice.CommandService;
+import com.min.charge.operator.*;
+import com.min.charge.service.CommandService;
+import org.apache.log4j.Logger;
+import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
 
 @Service
 public class CommandServiceImpl implements CommandService{
-
+	private static final Logger logger = Logger.getLogger(CommandServiceImpl.class);
 
 	@Override
 	public JsonResult connect(HttpServletRequest request, String token,
@@ -37,7 +33,8 @@ public class CommandServiceImpl implements CommandService{
 
 	@Override
 	public JsonResult start(HttpServletRequest request, String token,
-			String deviceSn, String path) {
+							String deviceSn, String path, String chargeRank) {
+		logger.debug("chargeRank: " + chargeRank);
 		Client client = LoginBuffer.getClient(token);
 		if (client == null) {
 			return JsonResult.code(ErrorCodeEnum.TOKEN_INVAILD);
