@@ -6,7 +6,7 @@ import com.min.charge.beans.BillRecords;
 import com.min.charge.beans.Client;
 import com.min.charge.buffer.LoginBuffer;
 import com.min.charge.config.Config;
-import com.min.charge.config.MybaitsConfig;
+import com.min.charge.config.MybatisConfig;
 import com.min.charge.enums.ErrorCodeEnum;
 import com.min.charge.enums.TradeStatusEnum;
 import com.min.charge.enums.TradeTypeEnum;
@@ -46,7 +46,7 @@ public class MicroPayServiceImpl implements MicroPayService{
 		// 生成订单号
 		BillRecords tradingLog = null;
 		try {
-			SqlSession session = MybaitsConfig.getCurrent();
+			SqlSession session = MybatisConfig.getCurrent();
 			BillRecordsMapper billRecordsMaper = session.getMapper(BillRecordsMapper.class);
 			if (null != tradingNo && tradingNo != "") {
 				tradingLog =billRecordsMaper.getBySn(tradingNo);
@@ -66,7 +66,7 @@ public class MicroPayServiceImpl implements MicroPayService{
 				tradingLog.setTradingSn(CommonTool.GetTradingSn(time));
 				tradingLog.setTotalFee(rechargeValue);
 				billRecordsMaper.save(tradingLog);
-				MybaitsConfig.commitCurrent();
+				MybatisConfig.commitCurrent();
 			}
 		} catch (Exception e) {
 			

@@ -3,7 +3,7 @@ package com.min.charge.service.impl;
 import com.min.charge.beans.BillRecords;
 import com.min.charge.beans.Micropay;
 import com.min.charge.config.Config;
-import com.min.charge.config.MybaitsConfig;
+import com.min.charge.config.MybatisConfig;
 import com.min.charge.enums.TradeStatusEnum;
 import com.min.charge.mapping.BillRecordsMapper;
 import com.min.charge.mapping.ClientMapper;
@@ -83,7 +83,7 @@ public class MicroNotifyServiceImpl implements MicroNotifyService{
 		String out_trade_no = params.get("out_trade_no");
 		logger.debug("微信通知账单号"+out_trade_no);
 		String lock = this.addLock(out_trade_no);
-		SqlSession session = MybaitsConfig.getCurrent();
+		SqlSession session = MybatisConfig.getCurrent();
 		
 		BillRecordsMapper billRecordsMapper = session.getMapper(BillRecordsMapper.class);
 		MicroPayMapper microPayMapper = session.getMapper(MicroPayMapper.class);
@@ -239,12 +239,12 @@ public class MicroNotifyServiceImpl implements MicroNotifyService{
 												tradingLog
 														.setTradeStatusEnum(TradeStatusEnum.Finished);
 												billRecordsMapper.update(tradingLog);
-												MybaitsConfig.commitCurrent();
+												MybatisConfig.commitCurrent();
 												
 												// 金额写进钱包
 										
 												clientMapper.updateBalance(tradingLog.getClientId(), total_fee);
-												MybaitsConfig.commitCurrent();
+												MybatisConfig.commitCurrent();
 												
 												// 移除缓存
 												this.removeLock(out_trade_no);
@@ -259,7 +259,7 @@ public class MicroNotifyServiceImpl implements MicroNotifyService{
 										
 										// 保存微信支付记录表
 										microPayMapper.save(micropay);
-										MybaitsConfig.commitCurrent();
+										MybatisConfig.commitCurrent();
 									} else {
 										// 查询订单的result_code=fail，重新请求
 										logger.error("\n"+"查询订单业务结果result_code="+checkParams.get("result_code")
@@ -331,7 +331,7 @@ public class MicroNotifyServiceImpl implements MicroNotifyService{
 				logger.error(e.getMessage(), e);
 			} finally {
 				
-				MybaitsConfig.closeCurrent();
+				MybatisConfig.closeCurrent();
 				
 			}
 		}

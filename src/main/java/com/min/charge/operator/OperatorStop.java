@@ -10,7 +10,7 @@ import com.min.charge.buffer.ChargeInfoBuffer;
 import com.min.charge.buffer.DeviceBuffer;
 import com.min.charge.buffer.TradingSnBuffer;
 import com.min.charge.config.Config;
-import com.min.charge.config.MybaitsConfig;
+import com.min.charge.config.MybatisConfig;
 import com.min.charge.enums.*;
 import com.min.charge.http.HttpMethod;
 import com.min.charge.http.api.ChargeApi;
@@ -37,7 +37,7 @@ public class OperatorStop {
 		String jsonString = ChargeApi.operator(
 				OperatorTypeEnum.Stop.getCommand(), deviceSn, path);
 		String method = "";
-		SqlSession session = MybaitsConfig.getCurrent();
+		SqlSession session = MybatisConfig.getCurrent();
 		String bufferSn = "";
 		try {
 			OrderRecord bufferRecord = ChargeInfoBuffer.Instance.getByClientId(client.getId());
@@ -135,8 +135,8 @@ public class OperatorStop {
 			session.rollback();
 			return JsonResult.code(ErrorCodeEnum.COMMAND_STOP_FAILD);
 		} finally {
-			MybaitsConfig.commitCurrent();
-			MybaitsConfig.closeCurrent();
+			MybatisConfig.commitCurrent();
+			MybatisConfig.closeCurrent();
 			TradingSnBuffer.Instance.remove(bufferSn);
 		}
 

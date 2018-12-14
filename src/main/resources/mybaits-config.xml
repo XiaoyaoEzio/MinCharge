@@ -27,15 +27,15 @@
 	    </environment>
   </environments>
     <mappers>
-        <mapper resource="com/min/charge/mapping/ClientMapper.xml"></mapper>
-        <mapper resource="com/min/charge/mapping/SysParamMapper.xml"></mapper>
-        <mapper resource="com/min/charge/mapping/BillRecordsMapper.xml"></mapper>
-        <mapper resource="com/min/charge/mapping/SysParamMapper.xml"></mapper>
-        <mapper resource="com/min/charge/mapping/MicroPayMapper.xml"></mapper>
-        <mapper resource="com/min/charge/mapping/OrderRecordMapper.xml"></mapper>
-        <mapper resource="com/min/charge/mapping/DeviceMapper.xml"></mapper>
-        <mapper resource="com/min/charge/mapping/UserMapper.xml"></mapper>
-        <mapper resource="com/min/charge/mapping/PriceMapper.xml"></mapper>
-        <mapper resource="com/min/charge/mapping/FirstMapper.xml"></mapper>
+        <mapper resource="com/min/charge/mapping/ClientMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/SysParamMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/BillRecordsMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/SysParamMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/MicroPayMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/OrderRecordMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/DeviceMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/UserMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/PriceMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/FirstMapper.xml"/>
     </mappers>
 </configuration>

@@ -8,7 +8,7 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 
 import com.min.charge.beans.Device;
-import com.min.charge.config.MybaitsConfig;
+import com.min.charge.config.MybatisConfig;
 import com.min.charge.mapping.DeviceMapper;
 
 public enum DeviceBuffer {
@@ -19,7 +19,7 @@ public enum DeviceBuffer {
 	private static Map<String, Device>  deviceMap = new HashMap<String, Device>();
 
 	public void init(){
-		SqlSession session = MybaitsConfig.getCurrent();
+		SqlSession session = MybatisConfig.getCurrent();
 		DeviceMapper deviceDao = session.getMapper(DeviceMapper.class);
 		
 		Collection<Device> devices = deviceDao.getByAll();
@@ -27,7 +27,7 @@ public enum DeviceBuffer {
 		for (Device device : devices) {
 			deviceMap.put(device.getDeviceSn(), device);
 		}
-		MybaitsConfig.closeCurrent();
+		MybatisConfig.closeCurrent();
 	}
 	
 	public synchronized void add(Device device){

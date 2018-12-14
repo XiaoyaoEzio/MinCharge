@@ -15,7 +15,7 @@ import com.min.charge.beans.Price;
 import com.min.charge.buffer.ChargeInfoBuffer;
 import com.min.charge.buffer.DeviceBuffer;
 import com.min.charge.config.Config;
-import com.min.charge.config.MybaitsConfig;
+import com.min.charge.config.MybatisConfig;
 import com.min.charge.enums.ErrorCodeEnum;
 import com.min.charge.enums.OperatorTypeEnum;
 import com.min.charge.enums.OrderStatusEnum;
@@ -33,7 +33,7 @@ public class OperatorStart {
 	
 	public JsonResult start(Client client, String deviceSn, String path ){
 
-		SqlSession session = MybaitsConfig.getCurrent();
+		SqlSession session = MybatisConfig.getCurrent();
 		JsonResult result = new JsonResult();
 		String jsonString = ChargeApi.operator(OperatorTypeEnum.Start.getCommand(), deviceSn, path);
 //		jsonString = "{\"appid\":\"5203305bc0d427bf7306085a307a305e\",\"mchid\":\"921d2c2ef90c25eab42ea1f298c29822\",\"nonce_str\":\"123456\",\"sign\":\"D35B2081ACF877DB2A43762AF7772355\",\"sign_type\":\"MD5\",\"time\":\"1527481061\",\"device_id\":\"429111890496002\",\"device_path\":\"10\",\"openid\":\"oj9EwwBsPY0wJCr7mvixdJFz7IBg\",\"attach\":\"\",\"command\":\"start\"}";
@@ -83,7 +83,7 @@ public class OperatorStart {
 				record.setTotalPauseTime(0);
 				record.setPath(path);
 				recordDao.save(record);
-				MybaitsConfig.commitCurrent();
+				MybatisConfig.commitCurrent();
 				ChargeInfoBuffer.Instance.addRecord(client.getId(), record);
 				
 			}
@@ -92,7 +92,7 @@ public class OperatorStart {
 			logger.error(e.getMessage(),e);
 			return JsonResult.code(ErrorCodeEnum.COMMAND_START_FAILD);
 		}finally{
-			MybaitsConfig.closeCurrent();
+			MybatisConfig.closeCurrent();
 		}
 		logger.debug(method);
 		

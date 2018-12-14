@@ -5,7 +5,7 @@ import com.min.charge.beans.Client;
 import com.min.charge.beans.Device;
 import com.min.charge.beans.OrderRecord;
 import com.min.charge.buffer.LoginBuffer;
-import com.min.charge.config.MybaitsConfig;
+import com.min.charge.config.MybatisConfig;
 import com.min.charge.enums.ErrorCodeEnum;
 import com.min.charge.enums.TradeTypeEnum;
 import com.min.charge.json.JsonResult;
@@ -32,7 +32,7 @@ public class RecordServiceImpl implements RecordService{
 		if (client == null) {
 			return JsonResult.code(ErrorCodeEnum.TOKEN_INVAILD);
 		}
-		SqlSession sqlSession = MybaitsConfig.getCurrent();
+		SqlSession sqlSession = MybatisConfig.getCurrent();
 		BillRecordsMapper billRecordsDao = sqlSession.getMapper(BillRecordsMapper.class);
 		Collection<BillRecords> recordHistorys = billRecordsDao.getAll(client.getId(), (pageIndex-1)*pageSize, pageSize*pageIndex);
 		Collection<RecordInfo> records = new LinkedList<RecordServiceImpl.RecordInfo>();
@@ -51,7 +51,7 @@ public class RecordServiceImpl implements RecordService{
 			records.add(info);
 		}
 		infos.records = records;
-		MybaitsConfig.closeCurrent();
+		MybatisConfig.closeCurrent();
 		return JsonResult.data(infos);
 		
 	}
@@ -66,7 +66,7 @@ public class RecordServiceImpl implements RecordService{
 			logger.error("非消费类型账单");
 			return JsonResult.code(ErrorCodeEnum.DATA_NOT_FOUND);
 		}
-		SqlSession sqlSession = MybaitsConfig.getCurrent();
+		SqlSession sqlSession = MybatisConfig.getCurrent();
 		BillRecordsMapper billRecordsDao = sqlSession.getMapper(BillRecordsMapper.class);
 		OrderRecordMapper orderRecordDao = sqlSession.getMapper(OrderRecordMapper.class);
 		DeviceMapper deviceDao = sqlSession.getMapper(DeviceMapper.class);
@@ -99,7 +99,7 @@ public class RecordServiceImpl implements RecordService{
 		consumeDetail.path = orderRecord.getPath();
 		consumeDetail.deviceName = device.getDeviceName();
 		consumeDetail.deviceSn = device.getDeviceSn();
-		MybaitsConfig.closeCurrent();
+		MybatisConfig.closeCurrent();
 		return JsonResult.data(consumeDetail);
 	}
 
@@ -113,7 +113,7 @@ public class RecordServiceImpl implements RecordService{
 			logger.error("非充值类型账单");
 			return JsonResult.code(ErrorCodeEnum.DATA_NOT_FOUND);
 		}
-		SqlSession sqlSession = MybaitsConfig.getCurrent();
+		SqlSession sqlSession = MybatisConfig.getCurrent();
 		BillRecordsMapper billRecordsDao = sqlSession.getMapper(BillRecordsMapper.class);
 		BillRecords billRecords = billRecordsDao.getById(id);
 		if (billRecords == null) {
@@ -127,7 +127,7 @@ public class RecordServiceImpl implements RecordService{
 		rechargeDetail.tradingSn = billRecords.getTradingSn();
 		rechargeDetail.tradeTime = dateFormat.format(billRecords.getCreatedDateTime());
 		rechargeDetail.totalFee = billRecords.getTotalFee();
-		MybaitsConfig.closeCurrent();
+		MybatisConfig.closeCurrent();
 		return JsonResult.data(rechargeDetail);
 	}
 	

@@ -13,38 +13,40 @@ import org.apache.log4j.Logger;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class MybaitsConfig {
+public class MybatisConfig {
 	
-	private static final Logger logger = Logger.getLogger(MybaitsConfig.class);
+	private static final Logger logger = Logger.getLogger(MybatisConfig.class);
 	private static SqlSessionFactory factory;
-	private static final ThreadLocal<SqlSession> tl = new ThreadLocal<SqlSession>();
-	
+	private static final ThreadLocal<SqlSession> tl = new ThreadLocal<>();
+
 	static {
 		
 		InputStream is = null;
 		
 		try{
-			is = MybaitsConfig.class.getClassLoader().getResourceAsStream("mybaits-config.xml");
-			MybaitsConfig.factory = new SqlSessionFactoryBuilder().build(is);
+			is = MybatisConfig.class.getClassLoader().getResourceAsStream("mybatis-config.xml");
+			MybatisConfig.factory = new SqlSessionFactoryBuilder().build(is);
 			 // 取得类型转换注册器
-	        TypeHandlerRegistry typeHandlerRegistry = MybaitsConfig.factory .getConfiguration().getTypeHandlerRegistry();
+	        TypeHandlerRegistry typeHandlerRegistry = MybatisConfig.factory .getConfiguration().getTypeHandlerRegistry();
 	        // 注册默认枚举转换器
 	        typeHandlerRegistry.register(OrderStatusEnum.class, AutoEnumTypeHandler.class);
 	        typeHandlerRegistry.register(TradeStatusEnum.class, AutoEnumTypeHandler.class);
 	        typeHandlerRegistry.register(TradeTypeEnum.class, AutoEnumTypeHandler.class);
 	        
-			System.out.println("数据库加载完成：" + MybaitsConfig.factory);
+			System.out.println("数据库加载完成：" + MybatisConfig.factory);
 		}catch(Exception ex){
 			logger.error(ex.getMessage(), ex);
 		}finally{
 			try {
-				is.close();
+				if (is != null) {
+					is.close();
+				}
 			} catch (IOException e) {
 				logger.error(e.getMessage(),e);
 			}
 		}
 	}
-	
+
 
 	
 	/**

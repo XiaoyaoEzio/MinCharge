@@ -48,7 +48,7 @@ public enum Config {
 	
 	public void loadConfig(){
 
-		SqlSession sqlSession = MybaitsConfig.getCurrent();
+		SqlSession sqlSession = MybatisConfig.getCurrent();
 		SysParamMapper sysParamMapper = sqlSession.getMapper(SysParamMapper.class);
 		List<SysParam> listParam = sysParamMapper.getAll();
 		for (SysParam item : listParam) {
@@ -116,7 +116,7 @@ public enum Config {
 			}
 			logger.error(item.getParamKey()+": "+item.getParamValue());
 		}
-		MybaitsConfig.closeCurrent();
+		MybatisConfig.closeCurrent();
 	}
 	
 	

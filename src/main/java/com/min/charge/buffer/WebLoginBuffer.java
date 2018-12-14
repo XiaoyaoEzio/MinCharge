@@ -8,7 +8,7 @@ import javax.servlet.http.HttpSession;
 import org.apache.ibatis.session.SqlSession;
 
 import com.min.charge.beans.User;
-import com.min.charge.config.MybaitsConfig;
+import com.min.charge.config.MybatisConfig;
 import com.min.charge.mapping.UserMapper;
 
 public enum WebLoginBuffer {
@@ -37,10 +37,10 @@ public enum WebLoginBuffer {
 		if (clientId == null) {
 			return null;
 		}
-		SqlSession sqlSession  = MybaitsConfig.getCurrent();
+		SqlSession sqlSession  = MybatisConfig.getCurrent();
 		UserMapper clientDao = sqlSession.getMapper(UserMapper.class);
 		User client = clientDao.getById(clientId);
-		MybaitsConfig.closeCurrent();
+		MybatisConfig.closeCurrent();
 		return  client;
 	}
 	

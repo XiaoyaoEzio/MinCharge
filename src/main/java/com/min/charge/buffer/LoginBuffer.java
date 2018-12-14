@@ -1,14 +1,13 @@
 package com.min.charge.buffer;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.min.charge.beans.Client;
+import com.min.charge.config.MybatisConfig;
+import com.min.charge.mapping.ClientMapper;
+import org.apache.ibatis.session.SqlSession;
 
 import javax.servlet.http.HttpSession;
-
-import org.apache.ibatis.session.SqlSession;
-import com.min.charge.beans.Client;
-import com.min.charge.config.MybaitsConfig;
-import com.min.charge.mapping.ClientMapper;
+import java.util.HashMap;
+import java.util.Map;
 
 public enum LoginBuffer {
 
@@ -16,7 +15,7 @@ public enum LoginBuffer {
 	
 	public static final String TOKEN_KEY = "Client_Id";
 	
-	private static Map<Integer, HttpSession> clientMap = new HashMap<Integer, HttpSession>();
+	private static Map<Integer, HttpSession> clientMap = new HashMap<>();
 
 	public static synchronized void bindUser(HttpSession session,Integer clientId){
 		if (session == null) {
@@ -36,10 +35,10 @@ public enum LoginBuffer {
 		if (clientId == null) {
 			return null;
 		}
-		SqlSession sqlSession  = MybaitsConfig.getCurrent();
+		SqlSession sqlSession  = MybatisConfig.getCurrent();
 		ClientMapper clientDao = sqlSession.getMapper(ClientMapper.class);
 		Client client = clientDao.getById(clientId);
-		MybaitsConfig.closeCurrent();
+		MybatisConfig.closeCurrent();
 		return  client;
 	}
 	

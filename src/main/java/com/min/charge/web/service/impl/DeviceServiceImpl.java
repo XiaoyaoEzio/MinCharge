@@ -5,14 +5,13 @@ import java.util.Date;
 
 import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.min.charge.beans.Device;
 import com.min.charge.beans.User;
 import com.min.charge.buffer.DeviceBuffer;
 import com.min.charge.buffer.WebLoginBuffer;
-import com.min.charge.config.MybaitsConfig;
+import com.min.charge.config.MybatisConfig;
 import com.min.charge.enums.ErrorCodeEnum;
 import com.min.charge.json.JsonResult;
 import com.min.charge.mapping.DeviceMapper;
@@ -33,7 +32,7 @@ public class DeviceServiceImpl implements DeviceService{
 			logger.error("webToken: " + webToken);
 			return JsonResult.code(ErrorCodeEnum.TOKEN_INVAILD);
 		}
-		SqlSession session = MybaitsConfig.getCurrent();
+		SqlSession session = MybatisConfig.getCurrent();
 		DeviceMapper deviceDao = session.getMapper(DeviceMapper.class);
 		Device device = deviceDao.getByDeviceSn(deviceSn);
 		if (device!=null) {
@@ -51,7 +50,7 @@ public class DeviceServiceImpl implements DeviceService{
 		DeviceBuffer.Instance.add(device);
 		deviceDao.save(device);
 		session.commit(true);
-		MybaitsConfig.closeCurrent();
+		MybatisConfig.closeCurrent();
 		return JsonResult.data(device);
 	}
 	
@@ -61,14 +60,14 @@ public class DeviceServiceImpl implements DeviceService{
 		if (user == null) {
 			return JsonResult.code(ErrorCodeEnum.TOKEN_INVAILD);
 		}
-		SqlSession session = MybaitsConfig.getCurrent();
+		SqlSession session = MybatisConfig.getCurrent();
 		DeviceMapper deviceDao = session.getMapper(DeviceMapper.class);
 		Collection<Device> devices = deviceDao.getPageSerache((pageIndex-1)*pageSize, pageSize*pageIndex, stationId);
 		DeviceInfo infos = new DeviceInfo();
 		infos.pageIndex = pageIndex;
 		infos.pageSize = pageSize;
 		infos.devices = devices;
-		MybaitsConfig.closeCurrent();
+		MybatisConfig.closeCurrent();
 		return JsonResult.data(infos);
 	}
 
@@ -78,7 +77,7 @@ public class DeviceServiceImpl implements DeviceService{
 		if (user == null) {
 			return JsonResult.code(ErrorCodeEnum.TOKEN_INVAILD);
 		}
-		SqlSession session = MybaitsConfig.getCurrent();
+		SqlSession session = MybatisConfig.getCurrent();
 		DeviceMapper deviceDao = session.getMapper(DeviceMapper.class);
 		Device device = deviceDao.getById(id);
 		if (device == null) {
@@ -87,7 +86,7 @@ public class DeviceServiceImpl implements DeviceService{
 		DeviceBuffer.Instance.remove(device.getDeviceSn());
 		deviceDao.deleted(device);
 		session.commit(true);
-		MybaitsConfig.closeCurrent();
+		MybatisConfig.closeCurrent();
 		return new JsonResult();
 	}
 
@@ -97,7 +96,7 @@ public class DeviceServiceImpl implements DeviceService{
 		if (user == null) {
 			return JsonResult.code(ErrorCodeEnum.TOKEN_INVAILD);
 		}
-		SqlSession session = MybaitsConfig.getCurrent();
+		SqlSession session = MybatisConfig.getCurrent();
 		DeviceMapper deviceDao = session.getMapper(DeviceMapper.class);
 		Device device = deviceDao.getById(id);
 		if (device == null) {
@@ -106,7 +105,7 @@ public class DeviceServiceImpl implements DeviceService{
 		device.setDeviceName(deviceName);
 		deviceDao.updateStatus(device);
 		session.commit(true);
-		MybaitsConfig.closeCurrent();
+		MybatisConfig.closeCurrent();
 		return JsonResult.data(device);
 	}
 	

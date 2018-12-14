@@ -11,7 +11,7 @@ import com.min.charge.beans.Client;
 import com.min.charge.beans.OrderRecord;
 import com.min.charge.buffer.ChargeInfoBuffer;
 import com.min.charge.config.Config;
-import com.min.charge.config.MybaitsConfig;
+import com.min.charge.config.MybatisConfig;
 import com.min.charge.enums.ErrorCodeEnum;
 import com.min.charge.enums.OperatorTypeEnum;
 import com.min.charge.enums.OrderStatusEnum;
@@ -26,7 +26,7 @@ private static final Logger logger = Logger.getLogger(OperatorRegain.class);
 	
 	public JsonResult regain(Client client,String deviceSn, String path){
 		JsonResult result = new JsonResult();
-		SqlSession session = MybaitsConfig.getCurrent();
+		SqlSession session = MybatisConfig.getCurrent();
 		String jsonString = ChargeApi.operator(OperatorTypeEnum.Regain.getCommand(), deviceSn,  path);
 		String method = "";
 		try {
@@ -49,13 +49,13 @@ private static final Logger logger = Logger.getLogger(OperatorRegain.class);
 				bufferRecord.setTotalPauseTime(totalPause);
 				OrderRecordMapper oRecordMapper = session.getMapper(OrderRecordMapper.class);
 				oRecordMapper.update(bufferRecord);
-				MybaitsConfig.commitCurrent();
+				MybatisConfig.commitCurrent();
 				ChargeInfoBuffer.Instance.addRecord(client.getId(), bufferRecord);
 			}
 		}catch(Exception e){
 			logger.error(e.getMessage(),e);
 		}finally{
-			MybaitsConfig.closeCurrent();
+			MybatisConfig.closeCurrent();
 		}
 		
 		return result;

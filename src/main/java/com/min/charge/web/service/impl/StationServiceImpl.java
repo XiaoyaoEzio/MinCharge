@@ -7,11 +7,10 @@ import org.apache.ibatis.session.SqlSession;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Service;
 
-import com.min.charge.beans.Device;
 import com.min.charge.beans.Station;
 import com.min.charge.beans.User;
 import com.min.charge.buffer.WebLoginBuffer;
-import com.min.charge.config.MybaitsConfig;
+import com.min.charge.config.MybatisConfig;
 import com.min.charge.enums.ErrorCodeEnum;
 import com.min.charge.json.JsonResult;
 import com.min.charge.mapping.StationMapper;
@@ -31,7 +30,7 @@ public class StationServiceImpl implements StationService{
 			logger.error("webToken: " + webToken);
 			return JsonResult.code(ErrorCodeEnum.TOKEN_INVAILD);
 		}
-		SqlSession session = MybaitsConfig.getCurrent();
+		SqlSession session = MybatisConfig.getCurrent();
 		StationMapper stationMapper = session.getMapper(StationMapper.class);
 		Station station = stationMapper.getByName(stationName);
 		if (station!=null) {
@@ -52,7 +51,7 @@ public class StationServiceImpl implements StationService{
 		station.setUpdateDateTime(now);
 		stationMapper.save(station);
 		session.commit(true);
-		MybaitsConfig.closeCurrent();
+		MybatisConfig.closeCurrent();
 		
 		return JsonResult.data(station);
 	}
@@ -64,7 +63,7 @@ public class StationServiceImpl implements StationService{
 			logger.error("webToken: " + webToken);
 			return JsonResult.code(ErrorCodeEnum.TOKEN_INVAILD);
 		}
-		SqlSession session = MybaitsConfig.getCurrent();
+		SqlSession session = MybatisConfig.getCurrent();
 		StationMapper stationMapper = session.getMapper(StationMapper.class);
 		
 		Collection<Station> stations = stationMapper.getPageSerache(pageSize*(pageIndex-1), pageIndex*pageSize, stationName);
@@ -84,7 +83,7 @@ public class StationServiceImpl implements StationService{
 			logger.error("webToken: " + webToken);
 			return JsonResult.code(ErrorCodeEnum.TOKEN_INVAILD);
 		}
-		SqlSession session = MybaitsConfig.getCurrent();
+		SqlSession session = MybatisConfig.getCurrent();
 		StationMapper stationMapper = session.getMapper(StationMapper.class);
 		Station station = stationMapper.getById(id);
 		if (station == null) {
@@ -110,7 +109,7 @@ public class StationServiceImpl implements StationService{
 		station.setUpdateDateTime(now);
 		stationMapper.save(station);
 		session.commit(true);
-		MybaitsConfig.closeCurrent();
+		MybatisConfig.closeCurrent();
 		
 		return JsonResult.data(station);
 	}

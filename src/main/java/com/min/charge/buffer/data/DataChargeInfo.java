@@ -1,20 +1,9 @@
 package com.min.charge.buffer.data;
 
-import java.util.Collection;
-import java.util.Date;
-import java.util.Map;
-
-import org.apache.ibatis.session.SqlSession;
-import org.apache.log4j.Logger;
-
-import com.min.charge.beans.BillRecords;
-import com.min.charge.beans.Client;
-import com.min.charge.beans.Device;
-import com.min.charge.beans.OrderRecord;
-import com.min.charge.beans.Price;
+import com.min.charge.beans.*;
 import com.min.charge.buffer.ChargeInfoBuffer;
 import com.min.charge.buffer.DeviceBuffer;
-import com.min.charge.config.MybaitsConfig;
+import com.min.charge.config.MybatisConfig;
 import com.min.charge.enums.OrderStatusEnum;
 import com.min.charge.enums.TradeStatusEnum;
 import com.min.charge.enums.TradeTypeEnum;
@@ -24,6 +13,12 @@ import com.min.charge.mapping.ClientMapper;
 import com.min.charge.mapping.OrderRecordMapper;
 import com.min.charge.mapping.PriceMapper;
 import com.min.charge.operator.OperatorState;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.log4j.Logger;
+
+import java.util.Collection;
+import java.util.Date;
+import java.util.Map;
 
 public class DataChargeInfo {
 	
@@ -32,7 +27,7 @@ public class DataChargeInfo {
 	public void refresh() {
 		Map<String, Device> bufferMap = DeviceBuffer.Instance.getDeviceMap();
 		logger.debug("轮询大小"+bufferMap.size());
-		SqlSession session = MybaitsConfig.getCurrent();
+		SqlSession session = MybatisConfig.getCurrent();
 		OrderRecordMapper orderDao = session
 				.getMapper(OrderRecordMapper.class);
 		for (String item : bufferMap.keySet()) {
@@ -105,7 +100,7 @@ public class DataChargeInfo {
 				}
 			}
 		}
-		MybaitsConfig.commitCurrent();
-		MybaitsConfig.closeCurrent();
+		MybatisConfig.commitCurrent();
+		MybatisConfig.closeCurrent();
 	}
 }

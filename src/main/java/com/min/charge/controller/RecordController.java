@@ -1,6 +1,6 @@
 package com.min.charge.controller;
 
-import com.min.charge.config.MybaitsConfig;
+import com.min.charge.config.MybatisConfig;
 import com.min.charge.json.JsonResult;
 import com.min.charge.service.RecordService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class RecordController {
 	
 		JsonResult jResult = new JsonResult();
 		jResult = recordService.getAll(token, pageIndex, pageSize);
-		MybaitsConfig.closeCurrent();
+		MybatisConfig.closeCurrent();
 		return jResult;
 	}
 	
