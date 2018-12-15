@@ -1,11 +1,13 @@
 package com.min.charge.service.impl;
 
 import com.min.charge.beans.Client;
+import com.min.charge.beans.Price;
 import com.min.charge.buffer.LoginBuffer;
 import com.min.charge.enums.ChargeRankEnum;
 import com.min.charge.enums.ErrorCodeEnum;
 import com.min.charge.json.JsonResult;
 import com.min.charge.mapping.ClientMapper;
+import com.min.charge.mapping.PriceMapper;
 import com.min.charge.operator.*;
 import com.min.charge.schedule.job.ChargeStopJob;
 import com.min.charge.service.CommandService;
@@ -26,6 +28,9 @@ public class CommandServiceImpl implements CommandService {
 
     @Autowired
     private ClientMapper clientMapper;
+
+    @Autowired
+    private PriceMapper priceMapper;
 
     @Override
     public JsonResult connect(HttpServletRequest request, String token,
@@ -48,18 +53,24 @@ public class CommandServiceImpl implements CommandService {
                             String deviceSn, String path, String chargeRank) {
         System.out.println("chargeRank: " + chargeRank);
 
-        // TODO 暂时不验证登录
-        /*Client client = LoginBuffer.getClient(token);
+        Client client = LoginBuffer.getClient(token);
         if (client == null) {
             return JsonResult.code(ErrorCodeEnum.TOKEN_INVAILD);
-        }*/
+        }
 
-        Client client = clientMapper.getById(70);
+        //Client client = clientMapper.getById(70);
 
-        // 设置定时关闭
+        logger.debug("chargeRank:" + chargeRank);
+        // 转换充电时长
         int chargeTime = ChargeRankEnum.getTimeByRank(Integer.parseInt(chargeRank));
         if (chargeTime == -1) {
             return JsonResult.code(ErrorCodeEnum.CHARGE_RANK_ERROR);
+        }
+        logger.debug("chargeTime:" + chargeTime);
+        // 判断账户余额
+        Price price = priceMapper.getByNow();
+        if (client.getBalance() <= 0 || client.getBalance() < (price.getCommonPrice() * chargeTime)) {
+            return JsonResult.code(ErrorCodeEnum.NOTENOUGH);
         }
 
         JsonResult start = new OperatorStart().start(client, deviceSn, path);
@@ -70,8 +81,7 @@ public class CommandServiceImpl implements CommandService {
         boolean result = setStopTime(chargeTime, client.getId(), deviceSn, path);
         if (result) {
             return start;
-        }
-        else {
+        } else {
             return JsonResult.code(ErrorCodeEnum.SET_STOP_TIME_FAILD);
         }
 
@@ -133,7 +143,7 @@ public class CommandServiceImpl implements CommandService {
             return true;
         }
 
-        String baseName = clientId + new Date().getTime() +"";
+        String baseName = clientId + new Date().getTime() + "";
         String jobName = "job" + baseName;
         String groupName = "group" + baseName;
         String triggerName = "trigger" + baseName;
@@ -145,15 +155,16 @@ public class CommandServiceImpl implements CommandService {
                 .usingJobData("path", path)
                 .build();
 
-        // TODO 暂时将充电时间设置为10秒
         Trigger trigger = TriggerBuilder.newTrigger()
                 .withIdentity(triggerName, groupName)
-                .startAt(DateBuilder.futureDate(10, DateBuilder.IntervalUnit.SECOND))
+                .startAt(DateBuilder.futureDate(chargeTime, DateBuilder.IntervalUnit.HOUR))
                 .forJob(jobName, groupName)
                 .build();
 
         try {
+            logger.debug("充电时长：" + chargeTime);
             scheduler.scheduleJob(jobDetail, trigger);
+            logger.debug("启动定时关闭");
             return true;
         } catch (SchedulerException e) {
             logger.error("quartz异常：" + e.getMessage());

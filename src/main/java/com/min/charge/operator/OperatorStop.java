@@ -95,9 +95,8 @@ public class OperatorStop {
 				// 需付费的充电时长向上取整
 				int costMin = (int) ((costTime / (1000 * 60)) + 1);
 
-				// TODO 暂时将花费设置为0
-				//int cost = price.getCommonPrice() / 60 * costMin;
-                int cost = 0;
+
+				int cost = price.getCommonPrice() / 60 * costMin;
 
 				BillRecords bill = new BillRecords();
 				bill.setClientId(clientId);

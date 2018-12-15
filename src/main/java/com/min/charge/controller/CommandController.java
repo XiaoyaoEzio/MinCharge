@@ -28,6 +28,8 @@ public class CommandController {
                      @RequestParam(name = "path", required = false) String path,
                      @RequestParam(name = "chargeRank", required = false) String chargeRank
     ) {
+
+        //return JsonResult.code(ErrorCodeEnum.NOTENOUGH);
         return commandService.start(request, token, deviceId, path, chargeRank);
     }
 

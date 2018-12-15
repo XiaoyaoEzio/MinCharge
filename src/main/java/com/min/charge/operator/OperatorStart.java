@@ -1,17 +1,8 @@
 package com.min.charge.operator;
 
-import java.util.Date;
-
-import org.apache.ibatis.session.SqlSession;
-import org.apache.log4j.Logger;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.min.charge.beans.BillRecords;
-import com.min.charge.beans.Client;
-import com.min.charge.beans.Device;
-import com.min.charge.beans.OrderRecord;
-import com.min.charge.beans.Price;
+import com.min.charge.beans.*;
 import com.min.charge.buffer.ChargeInfoBuffer;
 import com.min.charge.buffer.DeviceBuffer;
 import com.min.charge.config.Config;
@@ -26,12 +17,16 @@ import com.min.charge.mapping.BillRecordsMapper;
 import com.min.charge.mapping.OrderRecordMapper;
 import com.min.charge.mapping.PriceMapper;
 import com.min.charge.security.CommonTool;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.log4j.Logger;
+
+import java.util.Date;
 
 public class OperatorStart {
 
 	private static final Logger logger = Logger.getLogger(OperatorStart.class);
 	
-	public JsonResult start(Client client, String deviceSn, String path ){
+	public JsonResult start(Client client, String deviceSn, String path){
 
 		SqlSession session = MybatisConfig.getCurrent();
 		JsonResult result = new JsonResult();
@@ -39,12 +34,11 @@ public class OperatorStart {
 //		jsonString = "{\"appid\":\"5203305bc0d427bf7306085a307a305e\",\"mchid\":\"921d2c2ef90c25eab42ea1f298c29822\",\"nonce_str\":\"123456\",\"sign\":\"D35B2081ACF877DB2A43762AF7772355\",\"sign_type\":\"MD5\",\"time\":\"1527481061\",\"device_id\":\"429111890496002\",\"device_path\":\"10\",\"openid\":\"oj9EwwBsPY0wJCr7mvixdJFz7IBg\",\"attach\":\"\",\"command\":\"start\"}";
 		String method = "";
 		Device device = DeviceBuffer.Instance.getByDeviceSn(deviceSn);
+
 		try {
-			PriceMapper priceDao = session.getMapper(PriceMapper.class);
-			Price price	= priceDao.getByNow();
-			if (client.getBalance() <= 0 || client.getBalance() <price.getCommonPrice()) {
-				return JsonResult.code(ErrorCodeEnum.NOTENOUGH);
-			}
+            PriceMapper priceDao = session.getMapper(PriceMapper.class);
+            Price price	= priceDao.getByNow();
+
 			OrderRecord bufferRecord = ChargeInfoBuffer.Instance.getByClientId(client.getId());
 			if (bufferRecord != null) {
 				BillRecordsMapper billRecordDao = session.getMapper(BillRecordsMapper.class);

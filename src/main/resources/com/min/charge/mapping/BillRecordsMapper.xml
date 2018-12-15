@@ -19,7 +19,7 @@
 	</select>
 	
 	<select id="getAll" resultType = "BillRecords" >
-		select * from tBillRecords where ClientId = #{clientId} limit #{pageIndex},#{pageSize}
+		select * from tBillRecords where ClientId = #{clientId} ORDER BY CreatedDateTime DESC limit #{pageIndex},#{pageSize}
 	</select>
 	
 </mapper>

@@ -27,20 +27,25 @@ public class QuartzListener implements ApplicationListener {
         }
 
         if (event instanceof ContextRefreshedEvent) {
-            try {
-                scheduler.start();
-                logger.info("启动quartz");
-            } catch (SchedulerException e) {
-                logger.error("quartz启动异常：" + e.getMessage());
-                e.printStackTrace();
+            // 判断是否为父容器调用，以解决事件被执行三次
+            if (((ContextRefreshedEvent) event).getApplicationContext().getParent() == null) {
+                try {
+                    scheduler.start();
+                    logger.info("启动quartz");
+                } catch (SchedulerException e) {
+                    logger.error("quartz启动异常：" + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         } else if (event instanceof ContextClosedEvent) {
-            try {
-                scheduler.shutdown();
-                logger.info("停止quartz");
-            } catch (SchedulerException e) {
-                logger.error("quartz停止异常：" + e.getMessage());
-                e.printStackTrace();
+            if (((ContextClosedEvent) event).getApplicationContext().getParent() == null) {
+                try {
+                    scheduler.shutdown();
+                    logger.info("停止quartz");
+                } catch (SchedulerException e) {
+                    logger.error("quartz停止异常：" + e.getMessage());
+                    e.printStackTrace();
+                }
             }
         }
 
