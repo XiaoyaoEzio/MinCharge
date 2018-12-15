@@ -1,11 +1,8 @@
 package com.min.charge.http;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Random;
-
+import com.min.charge.config.Config;
+import com.min.charge.security.CommonTool;
+import com.min.charge.security.MD5;
 import org.apache.commons.net.util.Base64;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -16,9 +13,11 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 
-import com.min.charge.config.Config;
-import com.min.charge.security.CommonTool;
-import com.min.charge.security.MD5;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Random;
 
 
 
@@ -116,7 +115,6 @@ public class SmsTemplat {
 	
 	public static String templateSMS(String accountSid, String authToken,
 			String appId, String templateId, String to, String param) {
-		// TODO Auto-generated method stub
 		String result = "";
 		DefaultHttpClient httpclient=new DefaultHttpClient();
 		try {
@@ -165,7 +163,6 @@ public class SmsTemplat {
 	 * 短信验证码简易接口*/
 //	public static String templateSimpleSMS(String accountSid, String authToken,
 //			String appId, String templateId, String to, String param) {
-//		// TODO Auto-generated method stub
 //		String result = "";
 //		String url = "http://www.ucpaas.com/maap/sms/code";
 //		String timestamp = dateToStr(new Date(), "yyyyMMddHHmmssSSS");//获取时间戳

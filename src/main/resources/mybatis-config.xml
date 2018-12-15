@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <properties resource="jdbc.properties"/>
+
+    <typeAliases>
+        <package name="com.min.charge.beans"/>
+    </typeAliases>
+
+    <typeHandlers>
+        <typeHandler handler="com.min.charge.enums.AutoEnumTypeHandler"
+                     javaType="com.min.charge.enums.OrderStatusEnum"/>
+        <typeHandler handler="com.min.charge.enums.AutoEnumTypeHandler"
+                     javaType="com.min.charge.enums.TradeStatusEnum"/>
+        <typeHandler handler="com.min.charge.enums.AutoEnumTypeHandler"
+                     javaType="com.min.charge.enums.TradeTypeEnum"/>
+    </typeHandlers>
+
+    <!--<environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+                <property name="driver" value="${driver}"/>
+                <property name="poolPingEnabled" value="true"/>
+                <property name="poolPingQuery" value="select 1"/>
+                <property name="poolPingConnectionsNotUsedFor" value="1800000"/>
+
+
+                <property name="url" value="${url}"/>
+                <property name="username" value="${username}"/>
+                <property name="password" value="${password}"/>
+
+            </dataSource>
+        </environment>
+    </environments>-->
+   <!-- <mappers>
+        <mapper resource="com/min/charge/mapping/ClientMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/SysParamMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/BillRecordsMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/SysParamMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/MicroPayMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/OrderRecordMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/DeviceMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/UserMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/PriceMapper.xml"/>
+        <mapper resource="com/min/charge/mapping/FirstMapper.xml"/>
+    </mappers>-->
+</configuration>

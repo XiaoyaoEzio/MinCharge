@@ -1,11 +1,12 @@
 package com.min.charge.mapping;
 
+import com.min.charge.beans.Device;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
 import java.util.Collection;
 
-import org.apache.ibatis.annotations.Param;
-
-import com.min.charge.beans.Device;
-
+@Repository
 public interface DeviceMapper {
 
 	Device getById(@Param("id") int id);

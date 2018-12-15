@@ -23,10 +23,10 @@ public class CommandController {
     @RequestMapping("/min/charge/command/start")
     public @ResponseBody
     JsonResult start(HttpServletRequest request,
-                     @RequestParam(name = "token") String token,
-                     @RequestParam(name = "deviceSn") String deviceId,
-                     @RequestParam(name = "path") String path,
-                     @RequestParam(name = "chargeRank") String chargeRank
+                     @RequestParam(name = "token", required = false) String token,
+                     @RequestParam(name = "deviceSn", required = false) String deviceId,
+                     @RequestParam(name = "path", required = false) String path,
+                     @RequestParam(name = "chargeRank", required = false) String chargeRank
     ) {
         return commandService.start(request, token, deviceId, path, chargeRank);
     }

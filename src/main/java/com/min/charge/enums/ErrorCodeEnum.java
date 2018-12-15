@@ -19,6 +19,8 @@ public enum ErrorCodeEnum {
 	SMS_VCODE_INVAILD(10011,"验证码无效,请重新获取"),
 	SMS_VCODE_ERROR(10012,"验证码错误,请重新输入"),
 	NOTENOUGH(10013,"余额不足"),
+	CHARGE_RANK_ERROR(10014, "充电级别错误"),
+	SET_STOP_TIME_FAILD(10015, "设置定时关闭失败"),
 	COMMAND_UNKNOWN(20001,"未知的指令"),
 	COMMAND_START_FAILD(20002,"启动失败"),
 	COMMAND_STOP_FAILD(20003,"停止失败"),

@@ -1,9 +1,7 @@
 package com.min.charge.buffer.data;
 
-import org.apache.log4j.Logger;
-
 public enum ThreadOffline {
-	Instance;
+	/*Instance;
 	
 	private static final Logger logger = Logger.getLogger(ThreadOffline.class);
 	public boolean running = false;
@@ -34,7 +32,7 @@ public enum ThreadOffline {
 	public void stop(){
 		running = false;
 		logger.info("Stop Thread_Offine");
-	}
+	}*/
 	
 	
 }

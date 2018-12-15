@@ -1,11 +1,12 @@
 package com.min.charge.mapping;
 
+import com.min.charge.beans.OrderRecord;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
 import java.util.Collection;
 
-import org.apache.ibatis.annotations.Param;
-
-import com.min.charge.beans.OrderRecord;
-
+@Repository
 public interface OrderRecordMapper {
 
 	OrderRecord getById(@Param("id") long id);

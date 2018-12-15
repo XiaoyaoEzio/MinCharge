@@ -1,12 +1,12 @@
 package com.min.charge.mapping;
 
+import com.min.charge.beans.Station;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
 import java.util.Collection;
 
-import org.apache.ibatis.annotations.Param;
-
-import com.min.charge.beans.Device;
-import com.min.charge.beans.Station;
-
+@Repository
 public interface StationMapper {
 	
 	Station getById(@Param("id") int id);

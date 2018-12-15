@@ -1,11 +1,12 @@
 package com.min.charge.mapping;
 
+import com.min.charge.beans.SysParam;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
 import java.util.List;
 
-import org.apache.ibatis.annotations.Param;
-
-import com.min.charge.beans.SysParam;
-
+@Repository
 public interface SysParamMapper {
 
 	List<SysParam> getAll();

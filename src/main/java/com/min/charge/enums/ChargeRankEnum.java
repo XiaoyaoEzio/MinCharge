@@ -18,7 +18,7 @@ public enum ChargeRankEnum {
     /**
      * 充电时长, 0表示自动充满
      */
-    private int value;
+    private int time;
 
     /**
      * 名称
@@ -33,13 +33,27 @@ public enum ChargeRankEnum {
         return name;
     }
 
-    public int getValue() {
-        return value;
+    public int getTime() {
+        return time;
     }
 
-    ChargeRankEnum(int rank, int value, String name) {
+    ChargeRankEnum(int rank, int time, String name) {
         this.rank = rank;
-        this.value = value;
+        this.time = time;
         this.name = name;
+    }
+
+    /**
+     * 根据充电级别获取充电时间
+     * @param rank 充电级别
+     * @return 充电时间，-1表示级别错误
+     */
+    public static int getTimeByRank(int rank) {
+        int[] times = {2, 4, 6, 8, 0};
+        if (rank >= 0 && rank <= 4) {
+            return times[rank];
+        } else {
+            return -1;
+        }
     }
 }

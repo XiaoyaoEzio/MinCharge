@@ -1,39 +1,39 @@
 package com.min.charge.config;
 
-import com.min.charge.enums.AutoEnumTypeHandler;
-import com.min.charge.enums.OrderStatusEnum;
-import com.min.charge.enums.TradeStatusEnum;
-import com.min.charge.enums.TradeTypeEnum;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
-import org.apache.ibatis.session.SqlSessionFactoryBuilder;
-import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.io.IOException;
-import java.io.InputStream;
-
+@Component
 public class MybatisConfig {
 	
 	private static final Logger logger = Logger.getLogger(MybatisConfig.class);
 	private static SqlSessionFactory factory;
+
+	@Autowired
+	public void setFactory(SqlSessionFactory factory) {
+		MybatisConfig.factory = factory;
+	}
+
 	private static final ThreadLocal<SqlSession> tl = new ThreadLocal<>();
 
-	static {
+	/*static {
 		
 		InputStream is = null;
 		
 		try{
-			is = MybatisConfig.class.getClassLoader().getResourceAsStream("mybatis-config.xml");
-			MybatisConfig.factory = new SqlSessionFactoryBuilder().build(is);
+			//is = MybatisConfig.class.getClassLoader().getResourceAsStream("mybatis-config.xml");
+			//MybatisConfig.factory = new SqlSessionFactoryBuilder().build(is);
 			 // 取得类型转换注册器
-	        TypeHandlerRegistry typeHandlerRegistry = MybatisConfig.factory .getConfiguration().getTypeHandlerRegistry();
+	        *//*TypeHandlerRegistry typeHandlerRegistry = MybatisConfig.factory .getConfiguration().getTypeHandlerRegistry();
 	        // 注册默认枚举转换器
 	        typeHandlerRegistry.register(OrderStatusEnum.class, AutoEnumTypeHandler.class);
 	        typeHandlerRegistry.register(TradeStatusEnum.class, AutoEnumTypeHandler.class);
-	        typeHandlerRegistry.register(TradeTypeEnum.class, AutoEnumTypeHandler.class);
+	        typeHandlerRegistry.register(TradeTypeEnum.class, AutoEnumTypeHandler.class);*//*
 	        
-			System.out.println("数据库加载完成：" + MybatisConfig.factory);
+			//System.out.println("数据库加载完成：" + MybatisConfig.factory);
 		}catch(Exception ex){
 			logger.error(ex.getMessage(), ex);
 		}finally{
@@ -45,7 +45,7 @@ public class MybatisConfig {
 				logger.error(e.getMessage(),e);
 			}
 		}
-	}
+	}*/
 
 
 	

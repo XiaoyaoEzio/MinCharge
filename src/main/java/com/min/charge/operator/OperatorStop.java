@@ -31,7 +31,7 @@ public class OperatorStop {
 
 	private static final Object lock = new Object();
 
-	public JsonResult stop(Client client, String deviceSn, String path) {
+	public JsonResult stop(int clientId, String deviceSn, String path) {
 
 		JsonResult result = new JsonResult();
 		String jsonString = ChargeApi.operator(
@@ -40,7 +40,7 @@ public class OperatorStop {
 		SqlSession session = MybatisConfig.getCurrent();
 		String bufferSn = "";
 		try {
-			OrderRecord bufferRecord = ChargeInfoBuffer.Instance.getByClientId(client.getId());
+			OrderRecord bufferRecord = ChargeInfoBuffer.Instance.getByClientId(clientId);
 			if (bufferRecord == null) {
 				return JsonResult.code(ErrorCodeEnum.NO_CHARGING);
 			}
@@ -64,7 +64,7 @@ public class OperatorStop {
 				BillRecordsMapper billDao = session.getMapper(BillRecordsMapper.class);
 				PriceMapper priceDao = session.getMapper(PriceMapper.class);
 				ClientMapper clientDao = session.getMapper(ClientMapper.class);
-				client = clientDao.getById(client.getId());
+				Client client = clientDao.getById(clientId);
 				Date stopDate = new Date();
 				Price price = priceDao.getByNow();
 
@@ -94,10 +94,13 @@ public class OperatorStop {
 
 				// 需付费的充电时长向上取整
 				int costMin = (int) ((costTime / (1000 * 60)) + 1);
-				int cost = price.getCommonPrice() / 60 * costMin;
+
+				// TODO 暂时将花费设置为0
+				//int cost = price.getCommonPrice() / 60 * costMin;
+                int cost = 0;
 
 				BillRecords bill = new BillRecords();
-				bill.setClientId(client.getId());
+				bill.setClientId(clientId);
 				bill.setCreatedDateTime(stopDate);
 				bill.setDeviceId(DeviceBuffer.Instance.getByDeviceSn(deviceSn).getId());
 				bill.setPriceId(price.getId());
@@ -109,11 +112,11 @@ public class OperatorStop {
 				bufferRecord.setOrderStatusEnum(OrderStatusEnum.Stop);
 				bufferRecord.setStopTime(stopDate);
 				/*if (client.getBalance() < cost) {
-					clientDao.updateBalance(client.getId(), -client.getBalance());
+					clientDao.updateBalance(clientId, -client.getBalance());
 				} else {
-					clientDao.updateBalance(client.getId(), -cost);
+					clientDao.updateBalance(clientId, -cost);
 				}*/
-                clientDao.updateBalance(client.getId(), -cost);
+                clientDao.updateBalance(clientId, -cost);
 
 				ChargeInfoBuffer.Instance.removeByTradeSn(bufferRecord.getTradingSn());
 				ChargeInfoBuffer.Instance.removeByDeviceId_Path(bufferRecord.getDeviceId(),bufferRecord.getPath());
