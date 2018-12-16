@@ -94,7 +94,7 @@ public class RecordServiceImpl implements RecordService{
 		int chargeTime =
                 (int) (orderRecord.getStopTime().getTime() - orderRecord.getStartTime().getTime())
                 - consumeDetail.totalPauseTime;
-		chargeTime /= 6000;
+		chargeTime /= 60000;
 		consumeDetail.chargeTime = chargeTime;
 		consumeDetail.path = orderRecord.getPath();
 		consumeDetail.deviceName = device.getDeviceName();

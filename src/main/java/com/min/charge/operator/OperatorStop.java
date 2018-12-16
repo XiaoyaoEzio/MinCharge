@@ -96,7 +96,7 @@ public class OperatorStop {
 				int costMin = (int) ((costTime / (1000 * 60)) + 1);
 
 
-				int cost = price.getCommonPrice() / 60 * costMin;
+				int cost = (price.getCommonPrice() * costMin) / 60;
 
 				BillRecords bill = new BillRecords();
 				bill.setClientId(clientId);
