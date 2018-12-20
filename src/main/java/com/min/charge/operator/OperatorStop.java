@@ -95,6 +95,10 @@ public class OperatorStop {
 				// 需付费的充电时长向上取整
 				int costMin = (int) ((costTime / (1000 * 60)) + 1);
 
+				// 小于五分钟不收费
+				if (costMin < 5) {
+					costMin = 0;
+				}
 
 				int cost = (price.getCommonPrice() * costMin) / 60;
 

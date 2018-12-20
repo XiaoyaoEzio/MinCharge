@@ -2,6 +2,7 @@ package com.min.charge.service.impl;
 
 import com.min.charge.beans.Client;
 import com.min.charge.beans.Price;
+import com.min.charge.buffer.ChargeInfoBuffer;
 import com.min.charge.buffer.LoginBuffer;
 import com.min.charge.enums.ChargeRankEnum;
 import com.min.charge.enums.ErrorCodeEnum;
@@ -132,6 +133,24 @@ public class CommandServiceImpl implements CommandService {
             return JsonResult.code(ErrorCodeEnum.TOKEN_INVAILD);
         }
         JsonResult jsonResult = new JsonResult();
+
+        String baseName = ChargeInfoBuffer.Instance.removeJob(client.getId());
+        String jobName = "job" + baseName;
+        String groupName = "group" + baseName;
+        String triggerName = "trigger" + baseName;
+
+        try {
+            scheduler.pauseTrigger(TriggerKey.triggerKey(triggerName, groupName));
+            scheduler.pauseJob(JobKey.jobKey(jobName, groupName));
+            scheduler.unscheduleJob(TriggerKey.triggerKey(triggerName, groupName));
+            scheduler.deleteJob(JobKey.jobKey(jobName, groupName));
+            logger.info("停止定时关闭");
+        } catch (SchedulerException e) {
+            logger.error("停止定时关闭异常");
+            logger.error(e.getMessage());
+            e.printStackTrace();
+        }
+
         jsonResult = new OperatorStop().stop(client.getId(), deviceSn, path);
         return jsonResult;
     }
@@ -147,6 +166,8 @@ public class CommandServiceImpl implements CommandService {
         String jobName = "job" + baseName;
         String groupName = "group" + baseName;
         String triggerName = "trigger" + baseName;
+
+        ChargeInfoBuffer.Instance.addJob(clientId, baseName);
 
         JobDetail jobDetail = JobBuilder.newJob(ChargeStopJob.class)
                 .withIdentity(jobName, groupName)

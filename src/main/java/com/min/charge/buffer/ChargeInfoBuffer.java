@@ -1,8 +1,8 @@
 package com.min.charge.buffer;
 
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.min.charge.beans.OrderRecord;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 public enum ChargeInfoBuffer {
 
@@ -18,6 +18,8 @@ public enum ChargeInfoBuffer {
 	private static final ConcurrentHashMap<String, Integer> tradeSn_ClientId_Map  = new ConcurrentHashMap<String, Integer>();
 	
 	private static final ConcurrentHashMap<String, String> deviceId_tradeSn_Map = new ConcurrentHashMap<String, String>();
+
+	private static final ConcurrentHashMap<Integer, String> user_job_Map = new ConcurrentHashMap<>();
 	
 	public synchronized boolean addRecord(int clientId, OrderRecord record){
 
@@ -81,5 +83,17 @@ public enum ChargeInfoBuffer {
 			return true;
 		}
 		return false;
+	}
+
+	public synchronized boolean addJob(int clientId, String baseJobName) {
+		user_job_Map.put(clientId, baseJobName);
+		return true;
+	}
+
+	public synchronized String removeJob(int clientId) {
+		if (user_job_Map.containsKey(clientId)) {
+			return  user_job_Map.remove(clientId);
+		}
+		return null;
 	}
 }
