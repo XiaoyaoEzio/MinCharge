@@ -5,6 +5,7 @@
 
     <bean name="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean" >
         <property name="configLocation" value="classpath:quartz.properties"/>
+        <property name="jobFactory" ref="blackCowJobFactory" />
     </bean>
 
 </beans>

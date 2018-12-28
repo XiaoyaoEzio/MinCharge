@@ -18,4 +18,5 @@ public interface CommandService {
 
 	JsonResult stop(HttpServletRequest request, String token, String deviceSn, String path);
 
+	void stopBySystem(int clientId, String deviceSn, String path);
 }

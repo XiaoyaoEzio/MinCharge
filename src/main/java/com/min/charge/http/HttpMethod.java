@@ -1,13 +1,9 @@
 package com.min.charge.http;
 
-import java.io.InputStream;
+import okhttp3.*;
 
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.ResponseBody;
+import java.io.InputStream;
+import java.util.concurrent.TimeUnit;
 
 public class HttpMethod {
 
@@ -16,10 +12,14 @@ public class HttpMethod {
 	
 	public static String post(String url, String param) throws Exception{
 		String result = null;
-		OkHttpClient client = new OkHttpClient();
+		OkHttpClient client = new OkHttpClient.Builder()
+				.connectTimeout(30L, TimeUnit.SECONDS)
+				.readTimeout(30, TimeUnit.SECONDS)
+				.writeTimeout(30, TimeUnit.SECONDS)
+				.build();
 		RequestBody postBody = RequestBody.create(JSON,param);
 		Request request = new Request.Builder()
-        .url(url).post(postBody).build();
+				.url(url).post(postBody).build();
 	    Response response = client.newCall(request).execute();
 	    ResponseBody body = response.body();
     
@@ -36,7 +36,11 @@ public class HttpMethod {
 	
 	public static String get(String url, String param) throws Exception{
 		String result = null;
-		OkHttpClient client = new OkHttpClient();
+		OkHttpClient client = new OkHttpClient.Builder()
+				.connectTimeout(30L, TimeUnit.SECONDS)
+				.readTimeout(30, TimeUnit.SECONDS)
+				.writeTimeout(30, TimeUnit.SECONDS)
+				.build();
 		Request request = new Request.Builder()
         .url(url).build();
 	 

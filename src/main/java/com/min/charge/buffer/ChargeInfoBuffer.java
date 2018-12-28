@@ -19,8 +19,10 @@ public enum ChargeInfoBuffer {
 	
 	private static final ConcurrentHashMap<String, String> deviceId_tradeSn_Map = new ConcurrentHashMap<String, String>();
 
-	private static final ConcurrentHashMap<Integer, String> user_job_Map = new ConcurrentHashMap<>();
-	
+	private static final ConcurrentHashMap<Integer, String> stop_time_job_Map = new ConcurrentHashMap<>();
+
+	private static final ConcurrentHashMap<Integer, String> status_check_job_Map = new ConcurrentHashMap<>();
+
 	public synchronized boolean addRecord(int clientId, OrderRecord record){
 
 		clientId_OrderRecord_Map.put(clientId, record);
@@ -85,14 +87,25 @@ public enum ChargeInfoBuffer {
 		return false;
 	}
 
-	public synchronized boolean addJob(int clientId, String baseJobName) {
-		user_job_Map.put(clientId, baseJobName);
+	public synchronized boolean addSetStopTimeJob(int clientId, String baseJobName) {
+		stop_time_job_Map.put(clientId, baseJobName);
 		return true;
 	}
 
-	public synchronized String removeJob(int clientId) {
-		if (user_job_Map.containsKey(clientId)) {
-			return  user_job_Map.remove(clientId);
+	public synchronized String removeSetStopTimeJob(int clientId) {
+		if (stop_time_job_Map.containsKey(clientId)) {
+			return  stop_time_job_Map.remove(clientId);
+		}
+		return null;
+	}
+
+	public synchronized void addStatusCheckJob(int clientId, String baseJobName) {
+		status_check_job_Map.put(clientId, baseJobName);
+	}
+
+	public synchronized String removeStatusCheckJob(int clientId) {
+		if (status_check_job_Map.containsKey(clientId)) {
+			return status_check_job_Map.remove(clientId);
 		}
 		return null;
 	}

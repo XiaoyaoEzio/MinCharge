@@ -10,15 +10,14 @@ import com.min.charge.json.JsonResult;
 import com.min.charge.mapping.ClientMapper;
 import com.min.charge.mapping.PriceMapper;
 import com.min.charge.operator.*;
-import com.min.charge.schedule.job.ChargeStopJob;
+import com.min.charge.schedule.QuartzJobUtils;
 import com.min.charge.service.CommandService;
 import org.apache.log4j.Logger;
-import org.quartz.*;
+import org.quartz.Scheduler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 
 @Service
 public class CommandServiceImpl implements CommandService {
@@ -79,7 +78,7 @@ public class CommandServiceImpl implements CommandService {
             return start;
         }
 
-        boolean result = setStopTime(chargeTime, client.getId(), deviceSn, path);
+        boolean result = QuartzJobUtils.startCharge(chargeTime, client.getId(), deviceSn, path);
         if (result) {
             return start;
         } else {
@@ -134,64 +133,21 @@ public class CommandServiceImpl implements CommandService {
         }
         JsonResult jsonResult = new JsonResult();
 
-        String baseName = ChargeInfoBuffer.Instance.removeJob(client.getId());
-        String jobName = "job" + baseName;
-        String groupName = "group" + baseName;
-        String triggerName = "trigger" + baseName;
-
-        try {
-            scheduler.pauseTrigger(TriggerKey.triggerKey(triggerName, groupName));
-            scheduler.pauseJob(JobKey.jobKey(jobName, groupName));
-            scheduler.unscheduleJob(TriggerKey.triggerKey(triggerName, groupName));
-            scheduler.deleteJob(JobKey.jobKey(jobName, groupName));
-            logger.info("停止定时关闭");
-        } catch (SchedulerException e) {
-            logger.error("停止定时关闭异常");
-            logger.error(e.getMessage());
-            e.printStackTrace();
-        }
-
-        jsonResult = new OperatorStop().stop(client.getId(), deviceSn, path);
-        return jsonResult;
+        return stopImpl(client.getId(), deviceSn, path);
     }
 
-    // 设置定时关闭时间
-    private boolean setStopTime(int chargeTime, int clientId, String deviceSn, String path) {
-        // 自动充满不设置定时关闭
-        if (chargeTime == ChargeRankEnum.AUTO.getTime()) {
-            return true;
-        }
+    @Override
+    public void stopBySystem(int clientId, String deviceSn, String path) {
+        stopImpl(clientId, deviceSn, path);
+    }
 
-        String baseName = clientId + new Date().getTime() + "";
-        String jobName = "job" + baseName;
-        String groupName = "group" + baseName;
-        String triggerName = "trigger" + baseName;
+    private JsonResult stopImpl(int clientId, String deviceSn, String path) {
+        String baseStopTimeJob = ChargeInfoBuffer.Instance.removeSetStopTimeJob(clientId);
+        String removeStatusCheckJob = ChargeInfoBuffer.Instance.removeStatusCheckJob(clientId);
 
-        ChargeInfoBuffer.Instance.addJob(clientId, baseName);
+        QuartzJobUtils.stopJob(baseStopTimeJob);
+        QuartzJobUtils.stopJob(removeStatusCheckJob);
 
-        JobDetail jobDetail = JobBuilder.newJob(ChargeStopJob.class)
-                .withIdentity(jobName, groupName)
-                .usingJobData("clientId", clientId)
-                .usingJobData("deviceSn", deviceSn)
-                .usingJobData("path", path)
-                .build();
-
-        Trigger trigger = TriggerBuilder.newTrigger()
-                .withIdentity(triggerName, groupName)
-                .startAt(DateBuilder.futureDate(chargeTime, DateBuilder.IntervalUnit.HOUR))
-                .forJob(jobName, groupName)
-                .build();
-
-        try {
-            logger.debug("充电时长：" + chargeTime);
-            scheduler.scheduleJob(jobDetail, trigger);
-            logger.debug("启动定时关闭");
-            return true;
-        } catch (SchedulerException e) {
-            logger.error("quartz异常：" + e.getMessage());
-            e.printStackTrace();
-        }
-
-        return false;
+        return new OperatorStop().stop(clientId, deviceSn, path);
     }
 }
